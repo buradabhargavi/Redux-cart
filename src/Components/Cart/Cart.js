@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { cartAcions } from "../Store/cart-slice";
+import "./Cart.css";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -15,11 +16,16 @@ function Cart() {
     dispatch(cartAcions.removeItemFromCart(itemId));
   };
 
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.totalPrice,
+    0
+  );
+
   return (
-    <div>
+    <div className="cart-container">
       <h2>Your Cart</h2>
       {cartItems.length === 0 ? (
-        <p>No items in the cart.</p>
+        <p className="no-items">No items in the cart.</p>
       ) : (
         <ul>
           {cartItems.map((item) => (
@@ -28,15 +34,25 @@ function Cart() {
               <p>Price: ${item.price.toFixed(2)}</p>
               <p>Quantity: {item.quantity}</p>
               <p>Total Price: ${item.totalPrice.toFixed(2)}</p>
-              <button onClick={() => increaseQuantityHandler(item.itemId)}>
-                Increase
-              </button>
+
               <button onClick={() => decreaseQuantityHandler(item.itemId)}>
                 Decrease
+              </button>
+              <button onClick={() => increaseQuantityHandler(item.itemId)}>
+                Increase
               </button>
             </li>
           ))}
         </ul>
+      )}
+
+      {cartItems.length > 0 && (
+        <div className="toal-price">
+          <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
+          <button className="checkout-button" disabled={cartItems.length === 0}>
+            Checkout
+          </button>
+        </div>
       )}
     </div>
   );
